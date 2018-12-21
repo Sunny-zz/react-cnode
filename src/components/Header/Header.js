@@ -3,20 +3,24 @@ import styled from 'styled-components'
 import axios from 'axios'
 class Header extends Component {
   state = {
-    token: '',
+    token: '9948d556-1825-416f-934f-b3ce046403e3',
     userInfo: null
   }
   componentDidMount() {
-    this.setState({
-      userInfo: {
-        loginname: sessionStorage.loginname,
-        avatar_url: sessionStorage.avatar_url
-      }
-    })
+    const { loginname, avatar_url } = sessionStorage
+    if (loginname && avatar_url) {
+      this.setState({
+        userInfo: {
+          loginname,
+          avatar_url
+        }
+      })
+    }
   }
 
   render() {
     const { userInfo, token } = this.state
+    console.log(sessionStorage)
     //  h5 的本地存储
     return (
       <Head>
@@ -63,7 +67,7 @@ class Header extends Component {
           {userInfo ? (
             <div>
               <img style={{ width: '50px' }} src={userInfo.avatar_url} alt='' />
-              <button>登出</button>
+              <button onClick={this.logout}>登出</button>
             </div>
           ) : (
             <div>
@@ -91,19 +95,33 @@ class Header extends Component {
           // 当用户登录成功的时候 将用户的信息存储到浏览器中
           // localStorage(无时间限制）   sessionStorage     cookie
           // sessionStorage 不能存储对象
-          sessionStorage.loginname = res.data.loginname
-          sessionStorage.avatar_url = res.data.avatar_url
+          // sessionStorage.removeItem(loginname)
+          // sessionStorage.clear()
+
+          // 发 post 请求更新网上的数据 但是返回值并不是新的评论对象 而且评论对象内容很多
+          // 要更新本地的 评论 直接重新请求该文章的数据
+          const { loginname, avatar_url } = res.data
+          sessionStorage.loginname = loginname
+          sessionStorage.avatar_url = avatar_url
+          sessionStorage.token = token
           this.setState({
             userInfo: {
-              loginname: res.data.loginname,
-              avatar_url: res.data.avatar_url
-            }
+              loginname,
+              avatar_url
+            },
+            token: ''
           })
         })
         .catch(err => {
           alert('不对哦')
         })
     }
+  }
+  logout = () => {
+    this.setState({
+      userInfo: null
+    })
+    sessionStorage.clear()
   }
 }
 

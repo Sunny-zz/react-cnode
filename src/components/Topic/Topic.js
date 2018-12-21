@@ -11,6 +11,8 @@ class Topic extends Component {
     // 登陆的时候请求的文章详情是需要参数的
     const { id } = this.props.match.params
     axios.get(`https://cnodejs.org/api/v1/topic/${id}`).then(res => {
+      console.log(res.data.data)
+
       this.setState({
         topic: res.data.data
       })

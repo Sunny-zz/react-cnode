@@ -1,18 +1,8 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import axios from 'axios'
+import Topics from '../Topics/Topics'
+import { Route, NavLink } from 'react-router-dom'
 class Home extends Component {
-  state = {
-    topics: []
-  }
-  componentDidMount() {
-    axios.get('https://cnodejs.org/api/v1/topics?tab=share').then(res => {
-      this.setState({
-        topics: res.data.data
-      })
-    })
-  }
-
   render() {
     const navArr = [
       {
@@ -36,24 +26,26 @@ class Home extends Component {
         txt: '招聘'
       }
     ]
-    const { topics } = this.state
-    const nav = navArr.map(e => <li key={e.type}>{e.txt}</li>)
-    const list =
-      topics.length === 0 ? (
-        '请稍等。。。'
-      ) : (
-        <ul>
-          {topics.map(e => (
-            <li key={e.id}>{e.title}</li>
-          ))}
-        </ul>
-      )
+    const nav = navArr.map(e => (
+      <li key={e.type}>
+        <NavLink
+          to={`/${e.type === 'all' ? '' : e.type}`}
+          exact={e.type === 'all' ? true : false}
+        >
+          {e.txt}
+        </NavLink>
+      </li>
+    ))
     return (
       <Wrap>
         <nav>
           <Nav>{nav}</Nav>
         </nav>
-        {list}
+        <Route component={Topics} path='/' exact />
+        <Route component={Topics} path='/share' />
+        <Route component={Topics} path='/job' />
+        <Route component={Topics} path='/ask' />
+        <Route component={Topics} path='/good' />
       </Wrap>
     )
   }
@@ -75,5 +67,14 @@ const Nav = styled.ul`
   padding-left: 10px;
   li {
     margin-right: 20px;
+  }
+  li a {
+    color: #80bd01;
+    padding: 2px 6px;
+    border-radius: 5px;
+  }
+  li .active {
+    background-color: #80bd01;
+    color: #fff;
   }
 `

@@ -6,8 +6,18 @@ class Header extends Component {
     token: '',
     userInfo: null
   }
+  componentDidMount() {
+    this.setState({
+      userInfo: {
+        loginname: sessionStorage.loginname,
+        avatar_url: sessionStorage.avatar_url
+      }
+    })
+  }
+
   render() {
     const { userInfo, token } = this.state
+    //  h5 的本地存储
     return (
       <Head>
         <div className='container'>
@@ -78,8 +88,16 @@ class Header extends Component {
           accesstoken: token
         })
         .then(res => {
+          // 当用户登录成功的时候 将用户的信息存储到浏览器中
+          // localStorage(无时间限制）   sessionStorage     cookie
+          // sessionStorage 不能存储对象
+          sessionStorage.loginname = res.data.loginname
+          sessionStorage.avatar_url = res.data.avatar_url
           this.setState({
-            userInfo: res.data
+            userInfo: {
+              loginname: res.data.loginname,
+              avatar_url: res.data.avatar_url
+            }
           })
         })
         .catch(err => {

@@ -88,9 +88,10 @@ const List = styled.ul`
   li > a {
     flex-grow: 1;
     display: flex;
+    align-items: center;
   }
   li > a > .title {
-    flex-grow: 1;
+    width: 460px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -101,5 +102,7 @@ const List = styled.ul`
     text-align: right;
     font-size: 12px;
     flex-shrink: 0;
+    flex-grow: 1;
+    color: #888;
   }
 `

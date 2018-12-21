@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import styled from 'styled-components'
+import { filter } from '../../static/filter'
 class Topic extends Component {
   state = {
     topic: null
@@ -17,16 +19,34 @@ class Topic extends Component {
 
   render() {
     const { topic } = this.state
-    console.log(topic)
     const article = topic ? (
-      <div>
+      <Article>
         <h2>{topic.title}</h2>
-      </div>
+        <span>
+          ·作者{topic.author.loginname} ·来自{filter(topic.tab)}
+        </span>
+        <div
+          className='content'
+          dangerouslySetInnerHTML={{ __html: topic.content }}
+        />
+      </Article>
     ) : (
       <div>请稍等</div>
     )
-    return article
+    return <Wrap>{article}</Wrap>
   }
 }
 
 export default Topic
+const Wrap = styled.div`
+  width: 660px;
+  background-color: #fff;
+`
+const Article = styled.div`
+  padding: 10px;
+  width: 660px;
+  background-color: #fff;
+  .content img {
+    width: 100%;
+  }
+`

@@ -31,13 +31,14 @@ class Topics extends Component {
           {topics.map(e => (
             <li key={e.id}>
               <img src={e.author.avatar_url} alt='' />{' '}
-              <span>
+              <span className='count'>
                 <span title='回复数'>{e.reply_count}</span>/
                 <span title='阅读量'>{e.visit_count}</span>
               </span>
-              {e.top ? <span>置顶</span> : ''}
+              {e.top ? <span className='top'>置顶</span> : ''}
               <Link to={`/topic/${e.id}`}>
-                {e.title} <span>1 小时之前</span>
+                <span className='title'>{e.title}</span>
+                <span className='time'>1 小时之前</span>
               </Link>
             </li>
           ))}
@@ -62,7 +63,43 @@ const List = styled.ul`
     background-color: #f5f5f5;
   }
   li img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
+    border-radius: 3px;
+    margin-left: 8px;
+    flex-shrink: 0;
+  }
+  li .count {
+    width: 55px;
+    text-align: center;
+    font-size: 12px;
+    margin-left: 10px;
+    flex-shrink: 0;
+  }
+  li .top {
+    padding: 2px;
+    background-color: #80bd01;
+    color: #fff;
+    flex-shrink: 0;
+    font-size: 12px;
+    border-radius: 4px;
+    margin-right: 8px;
+  }
+  li > a {
+    flex-grow: 1;
+    display: flex;
+  }
+  li > a > .title {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #888;
+  }
+  li > a > .time {
+    width: 60px;
+    text-align: right;
+    font-size: 12px;
+    flex-shrink: 0;
   }
 `

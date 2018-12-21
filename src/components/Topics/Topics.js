@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 class Topics extends Component {
   state = {
     topics: []
@@ -29,7 +30,15 @@ class Topics extends Component {
         <List>
           {topics.map(e => (
             <li key={e.id}>
-              <img src={e.author.avatar_url} alt='' /> {e.title}
+              <img src={e.author.avatar_url} alt='' />{' '}
+              <span>
+                <span title='回复数'>{e.reply_count}</span>/
+                <span title='阅读量'>{e.visit_count}</span>
+              </span>
+              {e.top ? <span>置顶</span> : ''}
+              <Link to={`/topic/${e.id}`}>
+                {e.title} <span>1 小时之前</span>
+              </Link>
             </li>
           ))}
         </List>

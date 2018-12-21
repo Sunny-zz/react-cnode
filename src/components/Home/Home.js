@@ -31,6 +31,11 @@ class Home extends Component {
         <NavLink
           to={`/${e.type === 'all' ? '' : e.type}`}
           exact={e.type === 'all' ? true : false}
+          // onClick={() => {
+          //   //
+          //   console.log(2)
+          //   // this.forceUpdate()
+          // }}
         >
           {e.txt}
         </NavLink>

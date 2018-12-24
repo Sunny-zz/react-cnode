@@ -2,11 +2,15 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import Moment from 'react-moment'
+import 'moment/locale/zh-cn'
 class Topics extends Component {
   state = {
     topics: []
   }
   componentDidMount() {
+    console.log(this.props)
+
     const { pathname } = this.props.location
     // console.log(pathname.slice(1))
     // console.log(pathname.replace('/', ''))
@@ -36,9 +40,16 @@ class Topics extends Component {
                 <span title='阅读量'>{e.visit_count}</span>
               </span>
               {e.top ? <span className='top'>置顶</span> : ''}
-              <Link to={`/topic/${e.id}`}>
+              <Link
+                to={{
+                  pathname: `/topic/${e.id}`,
+                  state: { a: 10 }
+                }}
+              >
                 <span className='title'>{e.title}</span>
-                <span className='time'>1 小时之前</span>
+                <Moment className='time' fromNow locale='zh-cn'>
+                  {e.last_reply_at}
+                </Moment>
               </Link>
             </li>
           ))}
@@ -91,7 +102,7 @@ const List = styled.ul`
     align-items: center;
   }
   li > a > .title {
-    width: 460px;
+    width: 440px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -100,6 +111,7 @@ const List = styled.ul`
   li > a > .time {
     width: 60px;
     text-align: right;
+    padding-right: 15px;
     font-size: 12px;
     flex-shrink: 0;
     flex-grow: 1;

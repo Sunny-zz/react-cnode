@@ -4,11 +4,14 @@ class Aside extends Component {
   componentDidMount() {}
   render() {
     const { isLogin } = this.props
+    const { loginname, avatar_url } = sessionStorage
     return isLogin ? (
       <Wrap>
         <div>个人信息</div>
         <div>
-          <img src='' alt='' />
+          <img style={{ width: '50px' }} src={avatar_url} alt='' />
+          <span>{loginname}</span>
+          <br />
           <span>积分： 100</span>
         </div>
         <div>

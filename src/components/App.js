@@ -6,7 +6,8 @@ import Main from './Main/Main'
 
 class App extends Component {
   state = {
-    isLogin: false
+    isLogin: false,
+    user: {}
   }
   componentDidMount() {
     // 处理刷新的时候状态变回原来

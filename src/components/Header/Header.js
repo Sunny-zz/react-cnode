@@ -101,9 +101,12 @@ class Header extends Component {
 
           // 发 post 请求更新网上的数据 但是返回值并不是新的评论对象 而且评论对象内容很多
           // 要更新本地的 评论 直接重新请求该文章的数据
-          const { loginname, avatar_url } = res.data
+          const { loginname, avatar_url, id } = res.data
+          console.log(res.data)
+
           sessionStorage.loginname = loginname
           sessionStorage.avatar_url = avatar_url
+          sessionStorage.id = id
           sessionStorage.token = token
           setLogin(true)
           this.setState({

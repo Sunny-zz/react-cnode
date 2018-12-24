@@ -51,7 +51,16 @@ class Topic extends Component {
                   src={e.author.avatar_url}
                   alt=''
                 />
-                <span dangerouslySetInnerHTML={{ __html: e.content }} />
+                <div>
+                  <button
+                    onClick={() => {
+                      this.ups(e.id)
+                    }}
+                  >
+                    点赞
+                  </button>
+                  {e.ups.length}
+                </div>
                 <button
                   onClick={() => {
                     this.showArea(e.author.loginname, e.id)
@@ -59,6 +68,8 @@ class Topic extends Component {
                 >
                   回复
                 </button>
+                <span dangerouslySetInnerHTML={{ __html: e.content }} />
+
                 {e.isShowArea ? (
                   <div>
                     <textarea
@@ -146,7 +157,7 @@ class Topic extends Component {
     const { topic, otherComment } = this.state
     const { token } = sessionStorage
     axios
-      .post(`https://cnodejs.org/api/v1//topic/${topic.id}/replies`, {
+      .post(`https://cnodejs.org/api/v1/topic/${topic.id}/replies`, {
         accesstoken: token,
         content: otherComment,
         reply_id: id
@@ -155,6 +166,31 @@ class Topic extends Component {
         this.getTopic()
         this.setState({
           otherComment: ''
+        })
+      })
+  }
+  ups = id => {
+    const { token } = sessionStorage
+    const { topic } = this.state
+    axios
+      .post(`https://cnodejs.org/api/v1/reply/${id}/ups`, {
+        accesstoken: token
+      })
+      .then(res => {
+        console.log(res.data.action)
+        const userId = sessionStorage.id
+        const newTopic = { ...topic }
+        //
+        if (res.data.action === 'up') {
+          newTopic.replies.find(e => e.id === id).ups.push(userId)
+        } else {
+          newTopic.replies.find(e => e.id === id).ups = newTopic.replies
+            .find(e => e.id === id)
+            .ups.filter(e => e !== userId)
+          console.log(newTopic)
+        }
+        this.setState({
+          topic: newTopic
         })
       })
   }

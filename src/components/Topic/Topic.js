@@ -5,7 +5,8 @@ import { filter } from '../../static/filter'
 class Topic extends Component {
   state = {
     topic: null,
-    comment: ''
+    comment: '',
+    otherComment: ''
   }
   componentDidMount() {
     // 要分成登录和未登录
@@ -27,7 +28,7 @@ class Topic extends Component {
     })
   }
   render() {
-    const { topic, comment } = this.state
+    const { topic, comment, otherComment } = this.state
     const { token } = sessionStorage
     console.log(this.props)
     const article = topic ? (
@@ -53,15 +54,25 @@ class Topic extends Component {
                 <span dangerouslySetInnerHTML={{ __html: e.content }} />
                 <button
                   onClick={() => {
-                    this.showArea(e.author.loginname)
+                    this.showArea(e.author.loginname, e.id)
                   }}
                 >
                   回复
                 </button>
                 {e.isShowArea ? (
                   <div>
-                    <textarea />
-                    <button>回复</button>
+                    <textarea
+                      name='otherComment'
+                      value={otherComment}
+                      onChange={this.handleText}
+                    />
+                    <button
+                      onClick={() => {
+                        this.addOtherComment(e.id)
+                      }}
+                    >
+                      回复
+                    </button>
                   </div>
                 ) : (
                   ''
@@ -72,7 +83,11 @@ class Topic extends Component {
           {token ? (
             <div>
               <h4>添加回复</h4>
-              <textarea value={comment} onChange={this.handleText} />
+              <textarea
+                name='comment'
+                value={comment}
+                onChange={this.handleText}
+              />
               <button onClick={this.addComment}>评论</button>
             </div>
           ) : (
@@ -87,7 +102,7 @@ class Topic extends Component {
   }
   handleText = e => {
     this.setState({
-      comment: e.target.value
+      [e.target.name]: e.target.value
     })
   }
   addComment = () => {
@@ -105,16 +120,43 @@ class Topic extends Component {
         })
       })
   }
-  showArea = loginname => {
+  showArea = (loginname, id) => {
     const { topic } = this.state
     const newTopic = { ...topic }
-    newTopic.replies.find(
-      e => e.author.loginname === loginname
-    ).isShowArea = true
+    if (newTopic.replies.find(e => e.isShowArea)) {
+      newTopic.replies.find(e => e.isShowArea).isShowArea = false
+    }
+    newTopic.replies.find(e => e.id === id).isShowArea = true
+    // newTopic.replies = newTopic.replies.map(e => {
+    //   if (e.isShowArea) {
+    //     e.isShowArea = false
+    //   }
+    //   if (e.id === id) {
+    //     e.isShowArea = true
+    //   }
+    //   return e
+    // })
     console.log(newTopic)
     this.setState({
-      topic: newTopic
+      topic: newTopic,
+      otherComment: `@${loginname} `
     })
+  }
+  addOtherComment = id => {
+    const { topic, otherComment } = this.state
+    const { token } = sessionStorage
+    axios
+      .post(`https://cnodejs.org/api/v1//topic/${topic.id}/replies`, {
+        accesstoken: token,
+        content: otherComment,
+        reply_id: id
+      })
+      .then(res => {
+        this.getTopic()
+        this.setState({
+          otherComment: ''
+        })
+      })
   }
 }
 

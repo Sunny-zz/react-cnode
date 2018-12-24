@@ -180,7 +180,8 @@ class Topic extends Component {
         console.log(res.data.action)
         const userId = sessionStorage.id
         const newTopic = { ...topic }
-        //
+        // 一下操作是更新本地的点赞  也就是更新了 topic.replies 下面的某条评论下的 ups 数组
+        // 当返回的 action 是 up 的时候，也就说明原来没点赞，点了之后就要讲你的 id 添加到 ups 内，反之删除，在这里为什么不使用 axios 请求重新获取数据，因为可以直接对 state 进行修改，就完全和玩撒谎那个的数据一致了，所以不发请求更新。
         if (res.data.action === 'up') {
           newTopic.replies.find(e => e.id === id).ups.push(userId)
         } else {

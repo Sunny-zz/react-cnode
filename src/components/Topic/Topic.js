@@ -16,6 +16,11 @@ class Topic extends Component {
     const { id } = this.props.match.params
     axios.get(`https://cnodejs.org/api/v1/topic/${id}`).then(res => {
       console.log(res.data.data)
+      //  将该对象下的 replies 数组内的每一项添加一条属性  isShowArea 来控制该评论下的 文本输入框是否展示
+      res.data.data.replies = res.data.data.replies.map(e => {
+        e.isShowArea = false
+        return e
+      })
       this.setState({
         topic: res.data.data
       })
@@ -48,11 +53,19 @@ class Topic extends Component {
                 <span dangerouslySetInnerHTML={{ __html: e.content }} />
                 <button
                   onClick={() => {
-                    this.handleButton(e.author.loginname)
+                    this.showArea(e.author.loginname)
                   }}
                 >
                   回复
                 </button>
+                {e.isShowArea ? (
+                  <div>
+                    <textarea />
+                    <button>回复</button>
+                  </div>
+                ) : (
+                  ''
+                )}
               </li>
             ))}
           </ul>
@@ -92,9 +105,15 @@ class Topic extends Component {
         })
       })
   }
-  handleButton = loginname => {
+  showArea = loginname => {
+    const { topic } = this.state
+    const newTopic = { ...topic }
+    newTopic.replies.find(
+      e => e.author.loginname === loginname
+    ).isShowArea = true
+    console.log(newTopic)
     this.setState({
-      comment: `@${loginname} `
+      topic: newTopic
     })
   }
 }

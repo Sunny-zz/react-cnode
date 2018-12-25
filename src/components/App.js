@@ -15,6 +15,12 @@ class App extends Component {
     this.setState({
       isLogin: loginname && avatar_url ? true : false
     })
+    window.onbeforeunload = e => {
+      const eve = window.event || e
+      if (sessionStorage.token) {
+        eve.returnValue = '是否确定离开'
+      }
+    }
   }
 
   render() {

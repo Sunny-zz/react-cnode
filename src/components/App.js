@@ -17,7 +17,9 @@ class App extends Component {
     })
     window.onbeforeunload = e => {
       const eve = window.event || e
-      eve.returnValue = '是否确定离开'
+      if (sessionStorage.token) {
+        eve.returnValue = '是否确定离开'
+      }
     }
   }
 
